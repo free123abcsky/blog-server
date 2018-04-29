@@ -72,34 +72,5 @@ class UserController extends AbstractController {
 
     this.success('用户注销成功')
   }
-
-  /**
-   * 账号激活
-   * @returns {Promise<void>}
-   */
-  async activeAccount () {
-
-    const userId = this.ctx.params.userId
-    const token = this.ctx.query.token
-    const testToken = this.service.auth.genToken(userId)
-
-    if (token !== testToken) {
-      this.error('帐号验证失败')
-    }
-
-    let user = await this.service.user.getById(userId)
-
-    if(!user){
-      this.error('账号不存在')
-    }
-
-    if (!user.activated) {
-      user.activated = true
-      user = await this.service.user.update(userId, user)
-    }
-    delete user.passwordHash
-    user.token = this.createToken(user)
-    this.success(user)
-  }
 }
 module.exports = UserController
