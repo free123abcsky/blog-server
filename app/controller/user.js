@@ -6,9 +6,12 @@ class UserController extends AbstractController {
   constructor(ctx) {
     super(ctx)
 
-    this.createUserRule = {
-      email: {type: 'string', required: true, allowEmpty: false, format: /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/},
-      password: {type: 'password', required: true, allowEmpty: false, min: 6},
+    this.userRule = {
+        username: {type: 'string', required: true, allowEmpty: false, min: 6, max: 20, format: /^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){4,19}$/},
+        password: {type: 'password', required: true, allowEmpty: false, min: 6, max: 20, format: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/},
+        mobile: {type: 'string', required: true, allowEmpty: false, format: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$/},
+        email: {type: 'string', required: true, allowEmpty: false, format: /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/},
+        desc: {type: 'string', required: false, max: 500}
     }
 
   }
@@ -23,6 +26,33 @@ class UserController extends AbstractController {
     const users = []
     this.success(users)
   }
+
+    /**
+     * 用户添加
+     * @returns {Promise<void>}
+     */
+    async addUser() {
+        // 校验参数
+        this.ctx.validate(this.userRule)
+        // 组装参数
+        const payload = this.ctx.request.body
+        // 调用 Service 进行业务处理
+        let user = await this.service.user.getByUsername(payload.username)
+        if (user) {
+            this.error('此用户名已被注册')
+        }
+        user = await this.service.user.getByEmail(payload.email)
+        if (user) {
+            this.error('此邮箱已被注册')
+        }
+
+        user = await this.service.user.create(payload)
+        //发送激活账号邮件
+        this.service.email.sendActiveMail(user)
+        user.token = this.createToken(user)
+        delete user.passwordHash
+        this.success(user)
+    }
 
   /**
    * 用户状态更新

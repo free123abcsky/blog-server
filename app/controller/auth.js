@@ -7,7 +7,7 @@ class UserController extends AbstractController {
     super(ctx)
 
     this.createUserRule = {
-      email: {type: 'string', required: true, allowEmpty: false, format: /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/},
+      username: {type: 'string', required: true, allowEmpty: false, format: /^[a-zA-Z0-9_-]{4,16}$/},
       password: {type: 'password', required: true, allowEmpty: false, min: 6},
     }
 
@@ -44,14 +44,14 @@ class UserController extends AbstractController {
     // 校验参数
     this.ctx.validate(this.createUserRule)
     const payload = this.ctx.request.body
-    let user = await this.service.user.getByEmail(payload.email)
+    let user = await this.service.user.getByUsername(payload.username)
     if (!user) {
-      this.error('账号不存在')
+      this.error('用户不存在')
     }
 
     if (user.auth(payload.password)) {
       user = user.toObject()
-      if(user.status === 2){
+      if(!user.enable){
         this.error('用户被阻止登录')
       }
       delete user.passwordHash

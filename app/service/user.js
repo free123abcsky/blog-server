@@ -19,8 +19,13 @@ class UserService extends Service {
     }, user).lean()
   }
 
+
+  async getByUsername (username) {
+     return this.ctx.model.User.findOne({username})
+  }
+
   async getByEmail (email) {
-    return this.ctx.model.User.findOne({email})
+     return this.ctx.model.User.findOne({email})
   }
 
   async getById (id) {

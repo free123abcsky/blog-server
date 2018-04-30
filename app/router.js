@@ -12,6 +12,7 @@ module.exports = app => {
 
   //User相关
   router.get( '/api/users', controller.user.list)  //用户列表
+  router.post( '/api/user/add', controller.user.addUser)  //用户添加
   router.get( '/api/user/active', controller.user.activeAccount)  //账号激活
   router.post( '/api/user/reset_password', controller.user.resetPassword)  //用户状态更新
   router.post( '/api/user/change_status', controller.user.changeStatus)  //用户状态更新

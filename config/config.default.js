@@ -7,14 +7,24 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1513779989145_1674'
 
   // 加载 errorHandler 中间件
-  config.middleware = [ 'errorHandler' ]
+  config.middleware = [ 'errorHandler']
 
-  config.security = {
+/*  config.security = {
     csrf: {
       enable: false,
+      ignoreJSON: true
     },
-    domainWhiteList: [ 'http://localhost:8000' ],
-  }
+      methodnoallow: {
+          enable: false
+      },
+      domainWhiteList: [ 'http://localhost:8081' ],
+  }*/
+
+    config.security =  {
+       csrf: false,
+       debug: 'csrf-disable',
+       domainWhiteList: [ 'http://localhost:8082' ]
+    }
 
   config.mongoose = {
     url: 'mongodb://127.0.0.1:27017/b_dev',
@@ -44,6 +54,12 @@ module.exports = appInfo => {
       pass: 'xdqm@yx412kfs'
     }
   }
+
+  // config.cors= {
+  //     origin: '*',
+  //    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
+  //    credentials: true
+  // }
 
   return config
 }

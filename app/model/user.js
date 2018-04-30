@@ -3,7 +3,7 @@ var bcrypt = require('bcryptjs') //引入加密模块
 module.exports = app => {
   const mongoose = app.mongoose
   const UserSchema = new mongoose.Schema({
-    username: {type: String, default: ''},//名字
+    username: {type: String, default: ''},//用户名
     email: {type: String, required: true},//邮箱
     mobile: { type: String},
     passwordHash: {type: String, default: ''},//密码
@@ -17,7 +17,7 @@ module.exports = app => {
     position: {type: String, default: '职位'},//职位
     role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
     avatar: { type: String, default: 'https://1.gravatar.com/avatar/a3e54af3cb6e157e496ae430aed4f4a3?s=96&d=mm'},
-    personal_state: {type: String, default: '我的称述'},//我的称述
+    desc: {type: String, default: '备注'},//备注
     createdAt: { type: Date, default: Date.now },
     enable: { type: Boolean, default: true }, //用户是否有效
     activated: {type: Boolean, default: false}
